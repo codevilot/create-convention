@@ -44,7 +44,10 @@ function init() {
 }
 
 function checkGitFolder() {
-  if (!fs.existsSync("/.git")) execSync("git init");
+  if (!fs.existsSync("/.git")) {
+    console.log(chalk.blue("\ngit init"));
+    execSync("git init");
+  }
   selectPackageManager();
 }
 
