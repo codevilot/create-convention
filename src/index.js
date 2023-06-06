@@ -38,7 +38,13 @@ const overwriteMessage = (filename) => {
 };
 
 init();
+
 function init() {
+  checkGitFolder();
+}
+
+function checkGitFolder() {
+  if (!fs.existsSync("/.git")) execSync("git init");
   selectPackageManager();
 }
 
