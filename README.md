@@ -4,14 +4,7 @@ A CLI tool for generating convention files
 
 It fetches templates from the create-convention github repo for config files: https://github.com/codevilot/create-convention
 
-## Usage(If there is no .git folder)
-
-```sh
-git init
-npx create-convention
-```
-
-## Usage(If there is .git folder)
+## Usage
 
 ```sh
 npx create-convention
