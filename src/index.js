@@ -63,6 +63,7 @@ function installHusky(packageManager) {
   console.log(chalk.blue("\nSetting up husky"));
   execSync(`${packageScripts[packageManager].install} -D husky`);
   execSync(`npx husky install`);
+
   execSync('npm pkg set scripts.prepare="husky install"');
   execSync(
     `npx husky add .husky/pre-commit "${packageScripts[packageManager].run} lint"`

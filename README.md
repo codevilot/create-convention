@@ -1,4 +1,4 @@
-# create-gitignore
+# create-convention
 
 A CLI tool for generating convention files
 
@@ -6,11 +6,23 @@ It fetches templates from the create-convention github repo for config files: ht
 
 ## Usage
 
+Git repository and package.json is necessary. If you don't have these files
+
+```sh
+git init
+npm init
+
+
+npx create-convention
+```
+
+If you have, try right now!
+
 ```sh
 npx create-convention
 ```
 
-## create-gitignore includes
+## create-convention includes
 
 - prettierrc
 - eslintrc
