@@ -40,21 +40,6 @@ const overwriteMessage = (filename) => {
 init();
 
 function init() {
-  checkPackageJSON();
-}
-
-function checkPackageJSON() {
-  if (!fs.existsSync("package.json")) {
-    console.log(chalk.blue("\nnpm init"));
-    execSync("npm init");
-  }
-  checkGitFolder();
-}
-function checkGitFolder() {
-  if (!fs.existsSync(".git")) {
-    console.log(chalk.blue("\ngit init"));
-    execSync("git init");
-  }
   selectPackageManager();
 }
 

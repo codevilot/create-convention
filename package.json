@@ -1,8 +1,8 @@
 {
   "name": "create-convention",
-  "version": "0.0.3",
+  "version": "0.0.6",
   "description": "Use create-convention, you can set up eslint, prettier and husky super easily",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "start": "node lib",
     "dev": "babel -d lib/ src/ --copy-files --watch",
