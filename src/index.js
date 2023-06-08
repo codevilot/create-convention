@@ -6,7 +6,6 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import { execSync } from "node:child_process";
 
-const packageManagers = ["npm", "yarn"];
 const packageScripts = {
   npm: {
     init: "npm install",
@@ -18,14 +17,27 @@ const packageScripts = {
     install: "yarn add",
     run: "yarn",
   },
+  pnpm: {
+    init: "pnpm install",
+    install: "pnpm add",
+    run: "pnpm",
+  },
 };
 
+const packageManagers = Object.keys(packageScripts);
+
+const eslintLibList = {
+  "plugin:@typescript-eslint/recommended": "@typescript-eslint/eslint-plugin",
+};
+const pluginsList = {
+  "@typescript-eslint/parser": "@typescript-eslint/parser",
+};
 const [, , keyword] = minimist(process.argv)["_"];
 
 const ROOT_URL =
   "https://raw.githubusercontent.com/codevilot/create-convention/main/template/";
 
-const prettierTarget = "**/*.{ts,tsx,js,jsx,css,json,html}";
+const prettierTarget = "**/*.{ts,tsx,js,jsx,css}";
 
 const configFileList = [".gitignore", ".prettierrc", ".eslintrc"];
 
@@ -40,6 +52,22 @@ const overwriteMessage = (filename) => {
 init();
 
 function init() {
+  checkPackageJSON();
+}
+
+function checkPackageJSON() {
+  if (!fs.existsSync("package.json")) {
+    console.log(chalk.blue("\nnpm init -y for creating package.json"));
+    execSync("npm init -y");
+  }
+  checkGitFolder();
+}
+
+function checkGitFolder() {
+  if (!fs.existsSync(".git")) {
+    console.log(chalk.blue("\ngit init"));
+    execSync("git init");
+  }
   selectPackageManager();
 }
 
@@ -81,10 +109,10 @@ function installPrettierEslint(packageManager) {
   execSync(
     `npm pkg set lint-staged["**/*.{js,jsx,ts,tsx}"]="eslint --fix && prettier --write"`
   );
-  FetchConfigFiles();
+  FetchConfigFiles(0, packageManager);
 }
 
-function FetchConfigFiles(installedFileLength = 0) {
+function FetchConfigFiles(installedFileLength = 0, packageManager) {
   const filename = configFileList[installedFileLength];
 
   const url = ROOT_URL + (keyword ? keyword : "index") + filename;
@@ -93,20 +121,20 @@ function FetchConfigFiles(installedFileLength = 0) {
 
   request(url)
     .then(({ data }) => {
-      createConfigFile(data, installedFileLength);
+      createConfigFile(data, installedFileLength, packageManager);
     })
 
     .catch(() => {
       request(defaultURL)
         .then(({ data }) => {
-          createConfigFile(data, installedFileLength);
+          createConfigFile(data, installedFileLength, packageManager);
         })
         .catch((err) => {
           console.log(err);
         });
     });
 }
-function createFile(filecontent, installedFileLength) {
+function createFile(filecontent, installedFileLength, packageManager) {
   const filename = configFileList[installedFileLength];
   fs.writeFile(
     filename,
@@ -115,26 +143,46 @@ function createFile(filecontent, installedFileLength) {
     () => {
       console.log(chalk.green(`\n${filename} created!`));
       if (configFileList.length > installedFileLength + 1)
-        FetchConfigFiles(installedFileLength + 1);
-      else {
-        execSync("yarn format");
-      }
+        FetchConfigFiles(installedFileLength + 1, packageManager);
     }
   );
+  if (filename === ".eslintrc") installEslintLib(filecontent, packageManager);
 }
 
-function createConfigFile(filecontent, installedFileLength) {
+function installEslintLib(filecontent, packageManager) {
+  const extendsList = filecontent.extends;
+  const pluginsList = filecontent.plugins;
+  extendsList.forEach((extend) => installLib(extend, packageManager));
+  pluginsList.forEach((plugins) => installPlugins(plugins, packageManager));
+}
+
+function installPlugins(plugins, packageManager) {
+  console.log(pluginsList[plugins], plugins);
+  if (pluginsList[plugins])
+    execSync(
+      `${packageScripts[packageManager].install} ${pluginsList[plugins]} -D`
+    );
+}
+
+function installLib(extend, packageManager) {
+  if (eslintLibList[extend])
+    execSync(
+      `${packageScripts[packageManager].install} ${eslintLibList[extend]} -D`
+    );
+}
+
+function createConfigFile(filecontent, installedFileLength, packageManager) {
   const filename = configFileList[installedFileLength];
   fs.stat(filename, (err, file) => {
-    if (!file) createFile(filecontent, installedFileLength);
+    if (!file) createFile(filecontent, installedFileLength, packageManager);
     else
       inquirer.prompt([overwriteMessage(filename)]).then((answer) => {
-        if (answer.overwrite) createFile(filecontent, installedFileLength);
+        if (answer.overwrite)
+          createFile(filecontent, installedFileLength, packageManager);
         else {
           console.log(`\n${filename} config canceled!`);
           if (configFileList.length > installedFileLength + 1)
-            FetchConfigFiles(installedFileLength + 1);
-          else execSync("npm run format");
+            FetchConfigFiles(installedFileLength + 1, packageManager);
         }
       });
   });

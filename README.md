@@ -6,17 +6,7 @@ It fetches templates from the create-convention github repo for config files: ht
 
 ## Usage
 
-Git repository and package.json is necessary. If you don't have these files
-
-```sh
-git init
-npm init
-
-
-npx create-convention
-```
-
-If you have, try right now!
+Caution: If you don't have package.json and .git folder in your project, create-convention create package.json and .git folder.
 
 ```sh
 npx create-convention
