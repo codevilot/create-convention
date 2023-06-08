@@ -37,7 +37,11 @@ const [, , keyword] = minimist(process.argv)["_"];
 const ROOT_URL =
   "https://raw.githubusercontent.com/codevilot/create-convention/main/template/";
 
+<<<<<<< HEAD
 const prettierTarget = "**/*.{ts,tsx,js,jsx,css}";
+=======
+const prettierTarget = "*";
+>>>>>>> e3cc3cee5fc25e2f769183984b99ea6067aa776a
 
 const configFileList = [".gitignore", ".prettierrc", ".eslintrc"];
 
