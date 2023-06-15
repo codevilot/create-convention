@@ -28,22 +28,22 @@ const packageManagers = Object.keys(packageScripts);
 
 const eslintLibList = {
   "plugin:@typescript-eslint/recommended": "@typescript-eslint/eslint-plugin",
-};
-const pluginsList = {
   "@typescript-eslint/parser": "@typescript-eslint/parser",
 };
+
 const [, , keyword] = minimist(process.argv)["_"];
 
 const ROOT_URL =
   "https://raw.githubusercontent.com/codevilot/create-convention/main/template/";
 
-<<<<<<< HEAD
-const prettierTarget = "**/*.{ts,tsx,js,jsx,css}";
-=======
 const prettierTarget = "*";
->>>>>>> e3cc3cee5fc25e2f769183984b99ea6067aa776a
 
-const configFileList = [".gitignore", ".prettierrc", ".eslintrc"];
+const configFileList = [
+  ".gitignore",
+  ".prettierrc",
+  ".eslintrc",
+  ".prettierignore",
+];
 
 const overwriteMessage = (filename) => {
   return {
@@ -150,29 +150,24 @@ function createFile(filecontent, installedFileLength, packageManager) {
         FetchConfigFiles(installedFileLength + 1, packageManager);
     }
   );
-  if (filename === ".eslintrc") installEslintLib(filecontent, packageManager);
+  if (filename === ".eslintrc") installEslintLibs(filecontent, packageManager);
 }
 
-function installEslintLib(filecontent, packageManager) {
-  const extendsList = filecontent.extends;
-  const pluginsList = filecontent.plugins;
-  extendsList.forEach((extend) => installLib(extend, packageManager));
-  pluginsList.forEach((plugins) => installPlugins(plugins, packageManager));
+function installEslintLibs(filecontent, packageManager) {
+  const libList = [
+    ...(filecontent.extends || []),
+    ...(filecontent.plugins || []),
+  ];
+  libList.forEach((lib) => installEslintLib(lib, packageManager));
 }
 
-function installPlugins(plugins, packageManager) {
-  console.log(pluginsList[plugins], plugins);
-  if (pluginsList[plugins])
+function installEslintLib(libName, packageManager) {
+  if (eslintLibList[libName]) {
+    console.log(eslintLibList[libName], libName);
     execSync(
-      `${packageScripts[packageManager].install} ${pluginsList[plugins]} -D`
+      `${packageScripts[packageManager].install} ${eslintLibList[libName]} -D`
     );
-}
-
-function installLib(extend, packageManager) {
-  if (eslintLibList[extend])
-    execSync(
-      `${packageScripts[packageManager].install} ${eslintLibList[extend]} -D`
-    );
+  }
 }
 
 function createConfigFile(filecontent, installedFileLength, packageManager) {
