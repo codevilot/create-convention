@@ -6,7 +6,7 @@ It fetches templates from the create-convention github repo for config files: ht
 
 ## Usage
 
-Caution: If you don't have package.json and .git folder in your project, create-convention create package.json and .git folder.
+Caution: This package requires Node.js version 18 or higher.
 
 ```sh
 npx create-convention
@@ -17,7 +17,7 @@ npx create-convention
 - prettierrc
 - eslintrc
 - gitignore
-- husky
+- prettierignore
 
 ## If you want to add customized template, Push Request files
 
