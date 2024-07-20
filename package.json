@@ -1,6 +1,6 @@
 {
   "name": "create-convention",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Use create-convention, you can set up eslint, prettier and husky super easily",
   "main": "dist/main.js",
   "bin": "dist/main.js",

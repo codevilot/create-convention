@@ -26,7 +26,7 @@ import { config } from './config.js';
 
   if (gitIgnore) await config.setConfig(CONFIG_WITHOUT_INSTALL.git.configName);
 
-  if (prettier && prettierIgnore) await config.setConfig(CONFIG_WITHOUT_INSTALL.prettier.configName);
+  if (prettierIgnore) await config.setConfig(CONFIG_WITHOUT_INSTALL.prettier.configName);
 
-  if (prettier && vscodeConfig) await config.setConfig(CONFIG_WITHOUT_INSTALL.vscode.configName);
+  if (vscodeConfig) await config.setConfig(CONFIG_WITHOUT_INSTALL.vscode.configName);
 })();
